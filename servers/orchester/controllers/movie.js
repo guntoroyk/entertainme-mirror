@@ -1,13 +1,26 @@
-const baseUrl = 'http://localhost:3001'
+const redis = require('redis')
+const bluebird = require('bluebird')
+const client = redis.createClient()
+bluebird.promisifyAll(redis.RedisClient.prototype)
+bluebird.promisifyAll(redis.Multi.prototype)
+
 const axios = require('axios')
+const baseUrl = 'http://localhost:3001'
 
 class MovieController {
 
   static fetchMovies = async (req, res, next) => {
     try {
-      const { data } = await axios.get(`${baseUrl}/movies`)
-
-      res.status(200).json(data)
+      const movies = await client.getAsync('movies')
+      console.log(movies, 'dari redis')
+      if (movies) {
+        res.status(200).json(JSON.parse(movies))
+      } else {
+        const { data } = await axios.get(`${baseUrl}/movies`)
+        await client.setAsync('movies', JSON.stringify(data), 'EX', 10) // delete tiap 10 detik
+        res.status(200).json(data)
+      }
+      
     } catch (error) {
       next(error)
     }
@@ -16,45 +29,27 @@ class MovieController {
   static fetchMovie = async (req, res, next) => {
     const { movieId } = req.params
     try {
-      const { data } = await axios.get(`${baseUrl}/movies/${movieId}`)
+      const movie = await client.getAsync('movie')
 
-      res.status(200).json(data)
+      if (movie) {
+        res.status(200).json(JSON.parse(movie))
+      } else {
+        const { data } = await axios.get(`${baseUrl}/movies/${movieId}`)
+        await client.setAsync('movie', JSON.stringify(data), 'EX', 10) 
+        res.status(200).json(data)
+      }
+
     } catch (error) {
       next(error)
     }
   }
 
-  static fetchFavoriteMovies = async (req, res, next) => {
-    const { user } = req.params
-    try {
-      const { data } = await axios.get(`${baseUrl}/favorites/${user}`)
-      res.status(status).json(data)
-    } catch (error) {
-      next(error)
-    }
-  }
+  static addMovie = async (req, res, next) => {
+    const { title, overview, poster_path, backdrop_path, release_date, rating } = req.body
 
-  static fetchFavoriteMovie = async (req, res, next) => {
-    const { user, movieId } = req.params
     try {
-      const { data } = await axios.get(`${baseUrl}/favorites/${user}/${movieId}`)
-      res.status(status).json(data)
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  static addFavorite = async (req, res, next) => {
-    const { user, movieId } = req.params
-    try {
-      const { data } = await axios.get(`${baseUrl}/movies/${movieId}`)
-      const response = await axios.post(`${baseUrl}/favorites/${user}`, {
-        title: data.title, 
-        overview: data.overview, 
-        poster_path: data.poster_path, 
-        backdrop_path: data.backdrop_path, 
-        release_data: data.release_data,
-        vote_average: data.vote_average
+      const response = await axios.post(`${baseUrl}/movies`, {
+        title, overview, poster_path, backdrop_path, release_date, rating
       })
       res.status(201).json(response)
     } catch (error) {
@@ -62,15 +57,18 @@ class MovieController {
     }
   }
 
-  static deleteFavorite = async (req, res, next) => {
-    const { user, movieId } = req.params
+  static deleteMovie = async (req, res, next) => {
+    const { movieId } = req.params
     try {
-      const { data } = axios.delete(`${baseUrl}/favorites/${user}/${movieId}`)
+      const { data } = await axios.delete(`${baseUrl}/movies/${movieId}`)
       res.status(200).json(data)
     } catch (error) {
-      next(error)
+      // console.log(error)
+      next({status: error.response.data.status, message: error.response.data.message})
     }
   }
+
+
 
 }
 

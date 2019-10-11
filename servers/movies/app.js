@@ -27,5 +27,4 @@ mongoose.connect('mongodb://localhost/entertainme-movie', { useNewUrlParser: tru
     console.log('Failed connect to mongodb!')
   })
 
-
 app.listen(PORT, () => console.log('app.listening on port', PORT))
