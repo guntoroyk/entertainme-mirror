@@ -12,7 +12,7 @@ class MovieController {
   static fetchMovies = async (req, res, next) => {
     try {
       const movies = await client.getAsync('movies')
-      console.log(movies, 'dari redis')
+      // console.log(movies, 'dari redis')
       if (movies) {
         res.status(200).json(JSON.parse(movies))
       } else {
@@ -48,10 +48,11 @@ class MovieController {
     const { title, overview, poster_path, backdrop_path, release_date, rating } = req.body
 
     try {
-      const response = await axios.post(`${baseUrl}/movies`, {
+      const { data } = await axios.post(`${baseUrl}/movies`, {
         title, overview, poster_path, backdrop_path, release_date, rating
       })
-      res.status(201).json(response)
+      // console.log(data, 'berhasil!!!!')
+      res.status(201).json(data)
     } catch (error) {
       next(error)
     }
@@ -67,9 +68,6 @@ class MovieController {
       next({status: error.response.data.status, message: error.response.data.message})
     }
   }
-
-
-
 }
 
 module.exports = MovieController

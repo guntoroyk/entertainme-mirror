@@ -7,6 +7,7 @@ const MovieController = require('../controllers/movie')
 
 router.get('/', MovieController.fetchMovies)
 router.post('/', MovieController.addMovie)
+router.patch('/:movieId', MovieController.updateMovie)
 router.get('/:movieId', MovieController.fetchMovie)
 router.delete('/:movieId', MovieController.deleteMovie)
 
