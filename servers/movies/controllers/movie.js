@@ -26,7 +26,7 @@ module.exports = class MovieController {
   static addMovie = async (req, res, next) => {
     const { title, overview, poster_path, backdrop_path, release_date, rating } = req.body
     // const { user } = req.params
-
+    console.log(req.body, 'dari addMovie')
     try {
       const response = await Movie.create({
         title, overview, poster_path, backdrop_path, release_date, rating
@@ -34,17 +34,18 @@ module.exports = class MovieController {
       console.log(response, 'berhasil add movie!')
       res.status(201).json(response)
     } catch (error) {
+      console.log(error, 'error add movie')
       next(error)
     }
   }
 
   static updateMovie = async (req, res, next) => {
-    const { title, overview, poster_path, backdrop_path, release_date, rating } = req.body
+    const { title, overview, release_date, rating } = req.body
     const { movieId } = req.params
     console.log('masuk update')
     try {
       const response = await Movie.findOneAndUpdate({_id: movieId}, {
-        title, overview, poster_path, backdrop_path, release_date, rating
+        title, overview, release_date, rating
       })
       console.log(response, 'response pas update!!!')
       if (response) {

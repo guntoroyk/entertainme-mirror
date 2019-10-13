@@ -6,7 +6,7 @@ module.exports = {
     if (!req.body.poster_path) {
       next()
     } else {
-      console.log('masuk siniiii!', req.body.poster_path)
+      console.log('masuk imgp upload poster!', req.body.poster_path)
       axios({
         url: `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`,
         method: 'POST',

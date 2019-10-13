@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, TextInput, Text, TouchableOpacity, StatusBar } from 'react-native'
 import AnimatedEllipsis from 'react-native-animated-ellipsis'
 import { useMutation } from '@apollo/react-hooks'
@@ -8,59 +8,19 @@ import Constants from 'expo-constants'
 import * as Permissions from 'expo-permissions'
 import * as constants from '../../../constants'
 
-import { ADD_MOVIE } from '../../../graphql/mutation'
-import { FETCH_MOVIES } from '../../../graphql/query'
+import { EDIT_TVSHOW } from '../../../graphql/mutation'
+import { FETCH_TVSHOWS } from '../../../graphql/query'
 
-const AddMovie = ({ navigation }) => {
+const EditTvShow = ({ navigation }) => {
+  const tvShow = navigation.getParam('tvShow', null)
+
   const [title, setTitle] = useState('')
   const [overview, setOverview] = useState('')
   const [rating, setRating] = useState('')
   const [releaseDate, setreleaseDate] = useState('')
-  const [posterPath, setPosterPath] = useState('')
-  const [posterPathUriPrev, setPosterPathUriPrev] = useState(null)
-  const [backdropPath, setBackdropPath] = useState('')
-  const [backdropPathUriPrev, setBackdropPathUriPrev] = useState(null)
   const [successAdd, setSuccessAdd] = useState(false)
 
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false)
-
-  const getPermissionAsync = async () => {
-    if (Constants.platform.android) {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
-      if (status !== 'granted') {
-        alert('We need camera roll permission to upload an image')
-      }
-    }
-  }
-
-  const pickPosterImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      base64: true,
-      allowsediting: true,
-      aspect: [4, 3]
-    })
-
-    if (!result.cancelled) {
-      setPosterPath(result.base64)
-      setPosterPathUriPrev(result.uri)
-      // console.log(result.uri)
-    }
-  }
-
-  const pickBackdropImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      base64: true,
-      allowsediting: true,
-      aspect: [4, 3]
-    })
-
-    if (!result.cancelled) {
-      setBackdropPath(result.base64)
-      setBackdropPathUriPrev(result.uri)
-    }
-  }
 
   const showDateTimePicker = () => {
     setIsDateTimePickerVisible(true)
@@ -76,40 +36,42 @@ const AddMovie = ({ navigation }) => {
     hideDateTimePicker()
   }
 
-  const [addMovie, { loading, error } ] = useMutation(ADD_MOVIE, {
+  const [editTvShow, { loading, error } ] = useMutation(EDIT_TVSHOW, {
     onCompleted() {
       setSuccessAdd(true)
       setTimeout(() => {
         setSuccessAdd(false)
-        navigation.navigate('Movie')
+        navigation.navigate('TvShow')
       })
     },
     onError() {
       setTimeout(() => {
-        navigation.navigate('Movie')
-      })
-    },
-    update(cache, { data: { addMovie }}) {
-      const { movies } = cache.readQuery({ query: FETCH_MOVIES })
-      cache.writeQuery({
-        query: FETCH_MOVIES,
-        data: { movies: movies.concat([addMovie])}
+        navigation.navigate('TvShow')
       })
     }
   })
 
   const submitData = () => {
-    addMovie({
+    editTvShow({
       variables: {
+        id: tvShow._id,
         title,
         overview, 
-        poster_path: posterPath,
-        backdrop_path: backdropPath, 
         release_date: releaseDate.toLocaleString(), 
-        rating
+        rating: parseInt(rating)
       }
     })
   }
+
+  useEffect(() => {
+    console.log(tvShow, 'edit tvshow....')
+    if (tvShow) {
+      setTitle(tvShow.title)
+      setOverview(tvShow.overview)
+      setRating(tvShow.rating.toString())
+      setreleaseDate(tvShow.release_date)
+    }
+  }, [])
 
   if (loading) {
     return (
@@ -147,7 +109,7 @@ const AddMovie = ({ navigation }) => {
       <StatusBar barStyle="light-content" />
       <View style={styles.boxHeader}>
         <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white'}}>Add Movies</Text>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white'}}>Edit Tv Show</Text>
         </View>
       </View>
 
@@ -156,6 +118,7 @@ const AddMovie = ({ navigation }) => {
           <View style={styles.inputBox}>
             <Text style={styles.text}>Title</Text>
             <TextInput
+              value={ title }
               onChangeText={val => setTitle(val)}
               style={styles.input}
               placeholder="Required"
@@ -164,6 +127,7 @@ const AddMovie = ({ navigation }) => {
           <View style={styles.inputBox}>
             <Text style={styles.text}>Overview</Text>
             <TextInput
+              value={ overview }
               onChangeText={val => setOverview(val)}
               style={styles.input}
               placeholder="Required"
@@ -172,7 +136,8 @@ const AddMovie = ({ navigation }) => {
           <View style={styles.inputBox}>
             <Text style={styles.text}>Rating</Text>
             <TextInput
-              onChangeText={val => setRating(parseInt(val))}
+              value={ String(rating) }
+              onChangeText={val => setRating(val)}
               style={styles.input}
               placeholder="Required"
             />
@@ -201,41 +166,7 @@ const AddMovie = ({ navigation }) => {
               />
             </View>
           </View>
-          <View style={styles.inputBox}>
-            <Text style={styles.text}>Poster</Text>
-            <View style={{ flexDirection: 'row'}}>
-              <Text 
-                style={ styles.input2}
-                numberOfLines={1}
-                ellipsizeMode="head" 
-              > { posterPathUriPrev ? posterPathUriPrev : 'No file choosen' } </Text>
-              <TouchableOpacity
-                style={styles.buttonUpload}
-                activeOpacity={0.8}
-                onPress={ () => { getPermissionAsync(); pickPosterImage() }}
-              >
-                <Text style={{ color: 'white', alignSelf: 'center' }}>File</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.inputBox}>
-            <Text style={styles.text}>Backdrop</Text>
-            <View style={{ flexDirection: 'row'}}>
-              <Text 
-                style={ styles.input2 }
-                numberOfLines={1}
-                ellipsizeMode="head" 
-              > { backdropPathUriPrev ? backdropPathUriPrev : 'No file choosen' } </Text>
-              <TouchableOpacity
-                style={styles.buttonUpload}
-                activeOpacity={0.8}
-                onPress={ () => { getPermissionAsync(); pickBackdropImage() }}
-              >
-                <Text style={{ color: 'white', alignSelf: 'center' }}>File</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
+          
           <View style={styles.inputBox}>
             <TouchableOpacity 
               style={ styles.buttonSubmit }
@@ -250,8 +181,8 @@ const AddMovie = ({ navigation }) => {
   )
 }
 
-AddMovie.navigationOptions = {
-  headerTitle: 'Add Movie',
+EditTvShow.navigationOptions = {
+  headerTitle: 'Edit Tv Show',
   headerTitleStyle: {
     color: 'white'
   },
@@ -327,4 +258,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default AddMovie
+export default EditTvShow

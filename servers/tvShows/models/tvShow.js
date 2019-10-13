@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const MovieSchema = new Schema({
+const TvShowSchema = new Schema({
   title: {
     type: String,
   },
@@ -22,6 +22,6 @@ const MovieSchema = new Schema({
   }
 }, { timestamps: true })
 
-const Movie = mongoose.model('Movie', MovieSchema)
+const TvShow = mongoose.model('TvShow', TvShowSchema)
 
-module.exports = Movie
+module.exports = TvShow

@@ -2,27 +2,27 @@ import React, { useState } from 'react'
 import { View, StyleSheet, StatusBar, FlatList, Text, TouchableOpacity, TextInput } from 'react-native'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { useQuery } from '@apollo/react-hooks'
-import { FETCH_MOVIES } from '../../../graphql/query'
+import { FETCH_TVSHOWS } from '../../../graphql/query'
 import Constants from 'expo-constants'
 import Ionicons from "react-native-vector-icons/Ionicons"
 
 import * as constants from '../../../constants'
 import Card from '../../../components/card'
 import Loader from '../../../components/loader'
-import AddMovie from '../addMovie'
+import AddTvShow from '../addTvShow'
 
 console.log(Constants.statusBarHeight, 'tinggi statusbar')
-const MovieList = ({ navigation }) => {
-  const { loading, error, data } = useQuery(FETCH_MOVIES)
-  // console.log(data)
+const TvShowList = ({ navigation }) => {
+  const { loading, error, data } = useQuery(FETCH_TVSHOWS)
+  console.log(data)
   const [inputFocus, setInputFocus] = useState(null)
   return (
     <View style={ styles.container }>
       <StatusBar barStyle="light-content" />
       <View style={styles.boxHeader}>
         <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white'}}>Movies</Text>
-          <TouchableOpacity onPress={ () => navigation.navigate('FormMovie')}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white'}}>Tv Shows</Text>
+          <TouchableOpacity onPress={ () => navigation.navigate('FormTvShow')}>
             <Text>
               <Ionicons 
                 name="ios-add"
@@ -40,7 +40,7 @@ const MovieList = ({ navigation }) => {
         :
         <FlatList 
         style={ styles.flatList } 
-        data={ data.movies } 
+        data={ data.tvShows } 
         renderItem={ ({ item }) => (
           <Card
             data={ item }
@@ -84,16 +84,16 @@ const styles = StyleSheet.create({
   },
 })
 
-const MovieListNavigator = createSwitchNavigator({
-  MovieList,
-  AddMovie
+const TvShowListNavigator = createSwitchNavigator({
+  TvShowList,
+  AddTvShow
 })
 
-const MovieListContainer = createAppContainer(MovieListNavigator)
+const TvShowListContainer = createAppContainer(TvShowListNavigator)
 
 
-MovieListContainer.navigationOptions = {
-  headerTitle: 'Movies',
+TvShowListContainer.navigationOptions = {
+  headerTitle: 'Tv Shows',
   headerTitleStyle: {
     color: 'white'
   },
@@ -103,4 +103,4 @@ MovieListContainer.navigationOptions = {
 }
 
 
-export default MovieListContainer
+export default TvShowListContainer

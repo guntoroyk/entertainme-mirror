@@ -1,7 +1,7 @@
 import axios from 'axios'
-const movieServer = 'http://localhost:3001' 
+const tvShowServer = 'http://localhost:3002' 
 
-export const addMovie = async (parent, args, context, info) => {
+export const addTvShow = async (parent, args, context, info) => {
   const {  
     title,
     overview, 
@@ -11,10 +11,10 @@ export const addMovie = async (parent, args, context, info) => {
     rating 
   } = args
 
-  console.log(args, 'dari movies mutation')
+  console.log(args, 'dari tv show mutation')
   try {
     const { data } = await axios({
-      url: `${movieServer}/movies`,
+      url: `${tvShowServer}/tvshows`,
       method: 'POST',
       data: {
         title,
@@ -33,12 +33,12 @@ export const addMovie = async (parent, args, context, info) => {
 
   } catch ({response}) {
     
-    console.log(JSON.stringify(response, null, 2), 'error dari movies mutation')
+    console.log(JSON.stringify(response, null, 2), 'error dari tvshow mutation')
     return error.data
   }
 }
 
-export const editMovie = async (parent, args, context, info) => {
+export const editTvShow = async (parent, args, context, info) => {
   const {  
     id,
     title,
@@ -49,7 +49,7 @@ export const editMovie = async (parent, args, context, info) => {
 
   try {
     const { data } = await axios({
-      url: `${movieServer}/movies/${id}`,
+      url: `${tvShowServer}/tvshows/${id}`,
       method: 'PUT',
       data: {
         title,
@@ -67,11 +67,11 @@ export const editMovie = async (parent, args, context, info) => {
   }
 }
 
-export const deleteMovie = async (parent, args, context, info) => {
+export const deleteTvShow = async (parent, args, context, info) => {
   const { id } = args
   try {
     const { data } = await axios({
-      url: `${movieServer}/movies/${id}`,
+      url: `${tvShowServer}/tvshows/${id}`,
       method: 'DELETE'
     })
 

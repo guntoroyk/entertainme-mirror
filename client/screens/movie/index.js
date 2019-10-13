@@ -1,16 +1,16 @@
 import React from 'react'
-import { createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
-import * as constants from '../../constants'
 import MovieList from './movieList'
 import MovieDetail from './movieDetail'
 import AddMovie from './addMovie'
+import EditMovie from './editMovie'
 
 const MovieStackNavigator = createStackNavigator(
   {
     Movie: MovieList,
     Detail: MovieDetail,
-    FormMovie: AddMovie
+    FormMovie: AddMovie,
+    EditMovie: EditMovie
   },
   {
     headerMode: 'none',

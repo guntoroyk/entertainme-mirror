@@ -10,7 +10,7 @@ const Card = (props) => {
     <TouchableOpacity style={styles.container} onPress={ () => props.navigation.navigate('Detail', { dataId: data._id }) } >
       <Image 
         style={styles.image} 
-        source={{ uri: data.poster_path }}
+        source={{ uri: data.poster_path.image_url }}
       />
      <View style={styles.information}>
         <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: 'bold' }}>

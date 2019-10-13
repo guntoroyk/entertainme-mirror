@@ -4,6 +4,8 @@ export default gql`
   type Query {
     movies: [Movie],
     movie (id: ID): Movie,
+    tvShows: [TvShow],
+    tvShow (id: ID): TvShow
   }
 
   type Mutation {
@@ -27,18 +29,53 @@ export default gql`
       release_date: String, 
       rating: Int
     ) : Message,
+
+    addTvShow (
+      title: String, 
+      overview: String, 
+      poster_path: String,
+      backdrop_path: String, 
+      release_date: String, 
+      rating: Int
+    ): Movie,
+      
+    deleteTvShow (id: ID): Message,
+      
+    editTvShow (
+      id: ID, 
+      title: String, 
+      overview: String, 
+      poster_path: String,
+      backdrop_path: String, 
+      release_date: String, 
+      rating: Int
+    ) : Message,
         
-    upload (file: Upload!): String
   }
       
   type Movie {
     _id: ID
     title: String
     overview: String
-    poster_path: String
-    backdrop_path: String
+    poster_path: Img
+    backdrop_path: Img
     release_date: String
     rating: Int
+  }
+
+  type TvShow {
+    _id: ID
+    title: String
+    overview: String
+    poster_path: Img
+    backdrop_path: Img
+    release_date: String
+    rating: Int
+  }
+
+  type Img {
+    image_url: String,
+    delete_url: String
   }
 
   type Message {

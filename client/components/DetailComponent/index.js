@@ -1,16 +1,17 @@
 import React from 'react'
 import { View, Text, StyleSheet, StatusBar, ImageBackground, Image, TouchableOpacity, ScrollView } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons'
+import Ionicons from "react-native-vector-icons/Ionicons"
+
 import { AirbnbRating, Rating } from 'react-native-ratings'
 import * as constants from '../../constants'
 
 const Detail = (props) => {
-  const { movie, tvShow } = props
+  const { movie, tvShow, navigation } = props
   let data
   if(movie) {
     data = {
-      backdrop_path: movie.backdrop_path,
-      poster_path: movie.poster_path,
+      backdrop_path: movie.backdrop_path.image_url,
+      poster_path: movie.poster_path.image_url,
       title: movie.title,
       date: movie.release_date,
       overview: movie.overview,
@@ -18,15 +19,22 @@ const Detail = (props) => {
     }
   } else {
     data = {
-      backdrop_path: tvShow.backdrop_path,
-      poster_path: tvShow.poster_path,
-      title: tvShow.name,
-      subtitle: tvShow.status,
-      date: tvShow.first_air_date,
-      overview: tvShow.overview
+      backdrop_path: tvShow.backdrop_path.image_url,
+      poster_path: tvShow.poster_path.image_url,
+      title: tvShow.title,
+      date: tvShow.release_date,
+      overview: tvShow.overview,
+      rating: tvShow.rating
     }
   }
 
+  const handleEdit = () => {
+    if (movie) {
+      navigation.navigate('EditMovie', { movie }) 
+    } else {
+      navigation.navigate('EditTvShow', { tvShow }) 
+    }
+  }
   return (
     <ScrollView style={{flex: 1}}>
       <View style={{height: 230}}>
@@ -42,20 +50,23 @@ const Detail = (props) => {
           />
 
           <TouchableOpacity
+            onPress={ handleEdit }
             style={{
               borderWidth: 0,
-              borderColor: constants.color.primary,
+              borderStyle: "solid",
+              borderWidth: 2,
+              borderColor: "black",
               alignItems:'center',
               justifyContent:'center',
               width: 60,
               height: 60,
-              backgroundColor: constants.color.primary,
+              backgroundColor: 'white',
               borderRadius:50,
               alignSelf: 'flex-end',
               right: 50
             }}
             >
-            <Icon name="ios-heart" size={40} color="white" /> 
+            <Ionicons name="md-create" size={40} color="" /> 
           </TouchableOpacity>
         </View>
       </View>

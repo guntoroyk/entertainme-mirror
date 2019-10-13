@@ -8,10 +8,10 @@ import Constants from 'expo-constants'
 import * as Permissions from 'expo-permissions'
 import * as constants from '../../../constants'
 
-import { ADD_MOVIE } from '../../../graphql/mutation'
-import { FETCH_MOVIES } from '../../../graphql/query'
+import { ADD_TVSHOW } from '../../../graphql/mutation'
+import { FETCH_TVSHOWS } from '../../../graphql/query'
 
-const AddMovie = ({ navigation }) => {
+const AddTvShow = ({ navigation }) => {
   const [title, setTitle] = useState('')
   const [overview, setOverview] = useState('')
   const [rating, setRating] = useState('')
@@ -76,30 +76,30 @@ const AddMovie = ({ navigation }) => {
     hideDateTimePicker()
   }
 
-  const [addMovie, { loading, error } ] = useMutation(ADD_MOVIE, {
+  const [addTvShow, { loading, error } ] = useMutation(ADD_TVSHOW, {
     onCompleted() {
       setSuccessAdd(true)
       setTimeout(() => {
         setSuccessAdd(false)
-        navigation.navigate('Movie')
+        navigation.navigate('TvShow')
       })
     },
     onError() {
       setTimeout(() => {
-        navigation.navigate('Movie')
+        navigation.navigate('TvShow')
       })
     },
-    update(cache, { data: { addMovie }}) {
-      const { movies } = cache.readQuery({ query: FETCH_MOVIES })
+    update(cache, { data: { addTvShow }}) {
+      const { tvShows } = cache.readQuery({ query: FETCH_TVSHOWS })
       cache.writeQuery({
-        query: FETCH_MOVIES,
-        data: { movies: movies.concat([addMovie])}
+        query: FETCH_TVSHOWS,
+        data: { tvShows: tvShows.concat([addTvShow])}
       })
     }
   })
 
   const submitData = () => {
-    addMovie({
+    addTvShow({
       variables: {
         title,
         overview, 
@@ -147,7 +147,7 @@ const AddMovie = ({ navigation }) => {
       <StatusBar barStyle="light-content" />
       <View style={styles.boxHeader}>
         <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white'}}>Add Movies</Text>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white'}}>Add TvShow</Text>
         </View>
       </View>
 
@@ -250,8 +250,8 @@ const AddMovie = ({ navigation }) => {
   )
 }
 
-AddMovie.navigationOptions = {
-  headerTitle: 'Add Movie',
+AddTvShow.navigationOptions = {
+  headerTitle: 'Add TvShow',
   headerTitleStyle: {
     color: 'white'
   },
@@ -327,4 +327,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default AddMovie
+export default AddTvShow
