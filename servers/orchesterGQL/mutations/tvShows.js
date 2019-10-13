@@ -1,5 +1,6 @@
 import axios from 'axios'
 import client from '../configs/redis'
+import pubSub from '../subscriptions'
 const tvShowServer = 'http://localhost:3002' 
 
 export const addTvShow = async (parent, args, context, info) => {
@@ -36,6 +37,8 @@ export const addTvShow = async (parent, args, context, info) => {
       temp.push(data)
       client.set('tvShows', JSON.stringify(temp), 'EX', 60)
     }
+
+    pubSub.publish('tvShowUpdated', { tvShowUpdated: data })
     return data
 
   } catch ({response}) {

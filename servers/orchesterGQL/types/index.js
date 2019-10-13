@@ -1,6 +1,10 @@
 import { gql } from 'apollo-server'
 
 export default gql`
+  type Subscription {
+    tvShowUpdated: [TvShow]
+  }
+
   type Query {
     movies: [Movie],
     movie (id: ID): Movie,
