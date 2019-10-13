@@ -10,6 +10,7 @@ const routes = require('./routes')
 const errorHandler = require('./middlewares/errorHandler')
 
 const PORT = process.env.PORT || 3001
+const MONGO_URI = process.env.MONGO_URI
 const app = express()
 
 app.use(express.json())
@@ -19,7 +20,7 @@ app.use(morgan('tiny'))
 app.use('/', routes)
 app.use(errorHandler)
 
-mongoose.connect('mongodb://localhost/entertainme-movie', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(_ => {
     console.log('connected to mongodb!')
   })
