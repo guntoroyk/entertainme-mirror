@@ -1,4 +1,5 @@
 import axios from 'axios'
+import client from '../configs/redis'
 const movieServer = 'http://localhost:3001' 
 
 export const addMovie = async (parent, args, context, info) => {
@@ -11,7 +12,9 @@ export const addMovie = async (parent, args, context, info) => {
     rating 
   } = args
 
-  console.log(args, 'dari movies mutation')
+  const dataChache = await client.getAsync('movies')
+  // console.log(args, 'dari movies mutation')
+  console.log('dataChace', dataChache)
   try {
     const { data } = await axios({
       url: `${movieServer}/movies`,
@@ -26,9 +29,12 @@ export const addMovie = async (parent, args, context, info) => {
       }
     })
 
-    console.log('berhasill')
-    console.log(data)
-
+    if (dataChache) {
+      console.log('ada chache!!!')
+      const temp = JSON.parse(dataChache)
+      temp.push(data)
+      client.set('movies', JSON.stringify(temp), 'EX', 60)
+    }
     return data
 
   } catch ({response}) {
@@ -47,6 +53,7 @@ export const editMovie = async (parent, args, context, info) => {
     rating 
   } = args
 
+  const dataChache = await client.getAsync('movies')
   try {
     const { data } = await axios({
       url: `${movieServer}/movies/${id}`,
@@ -59,6 +66,16 @@ export const editMovie = async (parent, args, context, info) => {
       }
     })
 
+    if (dataChache) {
+      const temp = JSON.parse(dataChache)
+      const ID = temp.findIndex(el => {
+        return el._id === id
+      })
+      console.log(ID, 'ID movie updated')
+      temp[ID] = data
+      client.set('movies', JSON.stringify(temp), 'EX', 60)
+    }
+
     return data
 
   } catch (error) {
@@ -69,12 +86,18 @@ export const editMovie = async (parent, args, context, info) => {
 
 export const deleteMovie = async (parent, args, context, info) => {
   const { id } = args
+  const dataChache = await client.getAsync('movies')
   try {
     const { data } = await axios({
       url: `${movieServer}/movies/${id}`,
       method: 'DELETE'
     })
 
+    if (dataChache) {
+      const temp = JSON.parse(dataChache).filter(el => el._id !== id)
+      client.set('movies', JSON.stringify(temp), 'EX', 60)
+      
+    }
     return data
 
   } catch (error) {
