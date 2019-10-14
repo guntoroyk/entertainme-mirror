@@ -53,6 +53,19 @@ export const EDIT_MOVIE = gql`
     }
 `
 
+export const DELETE_MOVIE = gql`
+  mutation deleteMovie(
+    $id: ID!
+  ) {
+    deleteMovie(
+      id: $id
+    ) {
+      status, 
+      message
+    }
+  }
+`
+
 export const ADD_TVSHOW = gql`
   mutation addTvShow(
     $title: String!,
@@ -104,4 +117,16 @@ export const EDIT_TVSHOW = gql`
           message
       }
     }
+`
+export const DELETE_TVSHOW = gql`
+  mutation deleteTvShow(
+    $id: ID!
+  ) {
+    deleteTvShow(
+      id: $id
+    ) {
+      status, 
+      message
+    }
+  }
 `

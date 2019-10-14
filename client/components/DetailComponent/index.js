@@ -1,14 +1,46 @@
 import React from 'react'
+import { Alert } from 'react-native'
+import { useMutation } from '@apollo/react-hooks'
 import { View, Text, StyleSheet, StatusBar, ImageBackground, Image, TouchableOpacity, ScrollView } from 'react-native'
 import Ionicons from "react-native-vector-icons/Ionicons"
 
-import { FETCH_MOVIE, FETCH_TVSHOW } from '../../graphql/query'
+import { FETCH_MOVIE, FETCH_TVSHOW, FETCH_MOVIES, FETCH_TVSHOWS } from '../../graphql/query'
+import { DELETE_MOVIE, DELETE_TVSHOW } from '../../graphql/mutation'
 
 import { AirbnbRating, Rating } from 'react-native-ratings'
 import * as constants from '../../constants'
 
 const Detail = (props) => {
   const { movie, tvShow, navigation } = props
+  const [deleteMovie, { loading, error }] = useMutation(DELETE_MOVIE, {
+    onCompleted() {
+      setTimeout(() => {
+        navigation.navigate('Movie')
+      }, 1000)
+    },
+    onError() {
+      setTimeout(() => {
+        navigation.navigate('Movie')
+      }, 1000)
+    },
+    refetchQueries: [{ query: FETCH_MOVIES }],
+    awaitRefetchQueries: true
+  })
+
+  const [deleteTvShow, { loadingDeleteTv, errorDeleteTv }] = useMutation(DELETE_TVSHOW, {
+    onCompleted() {
+      setTimeout(() => {
+        navigation.navigate('TvShow')
+      }, 1000)
+    },
+    onError() {
+      setTimeout(() => {
+        navigation.navigate('TvShow')
+      }, 1000)
+    },
+    refetchQueries: [{ query: FETCH_TVSHOWS }],
+    awaitRefetchQueries: true
+  })
   let data
   if(movie) {
     data = {
@@ -37,6 +69,43 @@ const Detail = (props) => {
       navigation.navigate('EditTvShow', { tvShow }) 
     }
   }
+
+  const deleteThis = () => {
+    if (movie) {
+      console.log('masuk delete movie')
+      deleteMovie({
+        variables: {
+          id: movie._id
+        }
+      })
+    } else {
+      deleteTvShow({
+        variables: {
+          id: tvShow._id
+        }
+      })
+    }
+    console.log('deleted')
+  }
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Warning',
+      'Are you sure to delete this?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('canceled')
+        },
+        { 
+          text: 'Ok', 
+          onPress: () => deleteThis() 
+        },
+      ]
+    )
+  
+  }
+
   return (
     <ScrollView style={{flex: 1}}>
       <View style={{height: 230}}>
@@ -51,25 +120,49 @@ const Detail = (props) => {
             source={{uri: data.poster_path}}
           />
 
-          <TouchableOpacity
-            onPress={ handleEdit }
-            style={{
-              borderWidth: 0,
-              borderStyle: "solid",
-              borderWidth: 2,
-              borderColor: "black",
-              alignItems:'center',
-              justifyContent:'center',
-              width: 60,
-              height: 60,
-              backgroundColor: 'white',
-              borderRadius:50,
-              alignSelf: 'flex-end',
-              right: 50
-            }}
-            >
-            <Ionicons name="md-create" size={40} color="" /> 
-          </TouchableOpacity>
+          <View style={{ alignSelf: 'flex-end', flexDirection: 'row' }}>
+            <TouchableOpacity
+              onPress={ handleEdit }
+              style={{
+                borderWidth: 0,
+                borderStyle: "solid",
+                borderWidth: 2,
+                borderColor: "black",
+                alignItems:'center',
+                justifyContent:'center',
+                width: 50,
+                height: 50,
+                backgroundColor: 'white',
+                borderRadius:50,
+                right: 50,
+                padding: 5,
+                marginRight: 10
+                
+              }}
+              >
+              <Text><Ionicons name="md-create" size={30} color="" /> </Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={ handleDelete }
+              style={{
+                borderWidth: 0,
+                borderStyle: "solid",
+                borderWidth: 2,
+                borderColor: "black",
+                alignItems:'center',
+                justifyContent:'center',
+                width: 50,
+                height: 50,
+                backgroundColor: 'white',
+                borderRadius:50,
+                right: 50,
+                padding: 5
+
+              }}
+              >
+              <Text><Ionicons name="md-trash" size={30} color="" /> </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
