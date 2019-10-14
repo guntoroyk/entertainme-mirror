@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text, StyleSheet, StatusBar, ImageBackground, Image, TouchableOpacity, ScrollView } from 'react-native'
 import Ionicons from "react-native-vector-icons/Ionicons"
 
+import { FETCH_MOVIE, FETCH_TVSHOW } from '../../graphql/query'
+
 import { AirbnbRating, Rating } from 'react-native-ratings'
 import * as constants from '../../constants'
 
@@ -17,7 +19,7 @@ const Detail = (props) => {
       overview: movie.overview,
       rating: movie.rating
     }
-  } else {
+  } else if (tvShow) {
     data = {
       backdrop_path: tvShow.backdrop_path.image_url,
       poster_path: tvShow.poster_path.image_url,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, StatusBar, FlatList, Text, TouchableOpacity, TextInput } from 'react-native'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { useQuery } from '@apollo/react-hooks'
@@ -11,10 +11,13 @@ import Card from '../../../components/card'
 import Loader from '../../../components/loader'
 import AddTvShow from '../addTvShow'
 
-console.log(Constants.statusBarHeight, 'tinggi statusbar')
+// console.log(Constants.statusBarHeight, 'tinggi statusbar')
 const TvShowList = ({ navigation }) => {
   const { loading, error, data } = useQuery(FETCH_TVSHOWS)
-  console.log(data)
+
+  useEffect(() => {
+    console.log(data, 'dari tv show list')
+  }, [data])
   const [inputFocus, setInputFocus] = useState(null)
   return (
     <View style={ styles.container }>

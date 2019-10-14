@@ -16,6 +16,7 @@ export const movies = async () => {
       })
       console.log('belum ada di chache')
       client.set('movies', JSON.stringify(data), 'EX', 60)
+      console.log(data, 'hasil fetch movies')
       return data
     } catch (error) {
       return error.data

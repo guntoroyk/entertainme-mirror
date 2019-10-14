@@ -8,9 +8,9 @@ import * as constants from '../../../constants'
 
 const MovieDetail =  ({ navigation }) => {
   const movieId = navigation.getParam('dataId', null)
-  console.log(movieId, 'movieId')
+  // console.log(movieId, 'movieId')
   const { loading, error, data } = useQuery(FETCH_MOVIE(movieId))
-  console.log(data)
+  // console.log(data)
   if (loading) return <Loader />
   else if (error) return (
     <View>

@@ -6,7 +6,7 @@ import DateTimePicker from "react-native-modal-datetime-picker"
 import * as constants from '../../../constants'
 
 import { EDIT_MOVIE } from '../../../graphql/mutation'
-import { FETCH_MOVIES } from '../../../graphql/query'
+import { FETCH_MOVIE } from '../../../graphql/query'
 
 const EditMovie = ({ navigation }) => {
   const movie = navigation.getParam('movie', null)
@@ -38,21 +38,16 @@ const EditMovie = ({ navigation }) => {
       setSuccessAdd(true)
       setTimeout(() => {
         setSuccessAdd(false)
-        navigation.navigate('Movie')
-      })
+        navigation.navigate('Detail')
+      }, 1000)
     },
     onError() {
       setTimeout(() => {
-        navigation.navigate('Movie')
+        navigation.navigate('Detail')
       })
     },
-    // update(cache, { data: { editMovie }}) {
-    //   const { movies } = cache.readQuery({ query: FETCH_MOVIES })
-    //   cache.writeQuery({
-    //     query: FETCH_MOVIES,
-    //     data: { movies: movies.concat([editMovie])}
-    //   })
-    // }
+    refetchQueries: [{query: FETCH_MOVIE(movie._id)}],
+    awaitRefetchQueries: true
   })
 
   const submitData = () => {
@@ -104,7 +99,7 @@ const EditMovie = ({ navigation }) => {
   if (successAdd) {
     return (
       <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{fontSize: 23, color: 'rgb(97, 236, 97)'}}>Success!</Text>
+        <Text style={{fontSize: 23, color: 'rgb(97, 236, 97)'}}>Movie updated!</Text>
       </View>
     )
   }

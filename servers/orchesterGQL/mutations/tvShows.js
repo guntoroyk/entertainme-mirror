@@ -13,11 +13,10 @@ export const addTvShow = async (parent, args, context, info) => {
     rating 
   } = args
 
-  const dataChache = await client.getAsync('tvShows')
-  console.log(args, 'dari tv show mutation')
+  const dataCache = await client.getAsync('tvShows')
   try {
     const { data } = await axios({
-      url: `${tvShowServer}/tvshows`,
+      url: `${tvShowServer}/tvShows`,
       method: 'POST',
       data: {
         title,
@@ -28,17 +27,13 @@ export const addTvShow = async (parent, args, context, info) => {
         rating 
       }
     })
-    // console.log('berhasill')
-    // console.log(data)
 
-    if (dataChache) {
+    if (dataCache) {
       console.log('ada chache!!!')
-      const temp = JSON.parse(dataChache)
+      const temp = JSON.parse(dataCache)
       temp.push(data)
       client.set('tvShows', JSON.stringify(temp), 'EX', 60)
     }
-
-    pubSub.publish('tvShowUpdated', { tvShowUpdated: data })
     return data
 
   } catch ({response}) {

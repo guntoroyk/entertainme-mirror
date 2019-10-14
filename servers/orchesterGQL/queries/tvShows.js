@@ -16,8 +16,10 @@ export const tvShows = async () => {
       })
       console.log(dataChache, 'dataChache')
       client.set('tvShows', JSON.stringify(data), 'EX', 60)
+      console.log(data, 'hasil fetch tv shows')
       return data
     } catch (error) {
+      console.log(error, 'fetch tvshow error')
       return error.data
     }
   }

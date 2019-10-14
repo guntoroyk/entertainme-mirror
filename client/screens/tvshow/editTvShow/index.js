@@ -2,14 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, TextInput, Text, TouchableOpacity, StatusBar } from 'react-native'
 import AnimatedEllipsis from 'react-native-animated-ellipsis'
 import { useMutation } from '@apollo/react-hooks'
-import * as ImagePicker from 'expo-image-picker'
 import DateTimePicker from "react-native-modal-datetime-picker"
-import Constants from 'expo-constants'
-import * as Permissions from 'expo-permissions'
 import * as constants from '../../../constants'
 
 import { EDIT_TVSHOW } from '../../../graphql/mutation'
-import { FETCH_TVSHOWS } from '../../../graphql/query'
+import { FETCH_TVSHOW } from '../../../graphql/query'
 
 const EditTvShow = ({ navigation }) => {
   const tvShow = navigation.getParam('tvShow', null)
@@ -42,13 +39,15 @@ const EditTvShow = ({ navigation }) => {
       setTimeout(() => {
         setSuccessAdd(false)
         navigation.navigate('TvShow')
-      })
+      }, 1000)
     },
     onError() {
       setTimeout(() => {
         navigation.navigate('TvShow')
       })
-    }
+    },
+    refetchQueries: [{ query: FETCH_TVSHOW(tvShow._id)}],
+    awaitRefetchQueries: true
   })
 
   const submitData = () => {
