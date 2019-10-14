@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { View, StyleSheet, StatusBar, FlatList, Text, TouchableOpacity, TextInput } from 'react-native'
+import React, { useState, useEffect, useCallback } from 'react'
+import { View, StyleSheet, StatusBar, FlatList, Text, TouchableOpacity, RefreshControl } from 'react-native'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { useQuery } from '@apollo/react-hooks'
 import { FETCH_TVSHOWS } from '../../../graphql/query'
@@ -13,7 +13,17 @@ import AddTvShow from '../addTvShow'
 
 // console.log(Constants.statusBarHeight, 'tinggi statusbar')
 const TvShowList = ({ navigation }) => {
-  const { loading, error, data } = useQuery(FETCH_TVSHOWS)
+  const { loading, error, data, refetch } = useQuery(FETCH_TVSHOWS)
+  const [refreshing, setRefreshing] = useState(false)
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    console.log('refreshing', refreshing)
+    refetch().finally(() => {
+      setRefreshing(false)
+      console.log('refreshing', refreshing)
+    })
+  })
 
   useEffect(() => {
     console.log(data, 'dari tv show list')
@@ -38,10 +48,13 @@ const TvShowList = ({ navigation }) => {
         </View>
       </View>
 
-     { loading ? 
+     { loading || refreshing ? 
         <Loader />
         :
         <FlatList 
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         style={ styles.flatList } 
         data={ data.tvShows } 
         renderItem={ ({ item }) => (
@@ -70,7 +83,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     paddingBottom: 7,
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    marginBottom: 10
   },
   flatList: {
     paddingTop: constants.size.space,

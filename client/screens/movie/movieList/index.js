@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, StatusBar, FlatList, Text, TouchableOpacity, TextInput } from 'react-native'
+import React, { useState, useCallback } from 'react'
+import { View, StyleSheet, StatusBar, FlatList, Text, TouchableOpacity, RefreshControl } from 'react-native'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { useQuery } from '@apollo/react-hooks'
 import { FETCH_MOVIES } from '../../../graphql/query'
@@ -13,9 +13,17 @@ import AddMovie from '../addMovie'
 
 console.log(Constants.statusBarHeight, 'tinggi statusbar')
 const MovieList = ({ navigation }) => {
-  const { loading, error, data } = useQuery(FETCH_MOVIES)
+  const { loading, error, data, refetch } = useQuery(FETCH_MOVIES)
+  const [refreshing, setrefreshing] = useState(false)
   // console.log(data)
-  const [inputFocus, setInputFocus] = useState(null)
+
+  const onRefresh = useCallback(() => {
+    console.log('refresh!!!')
+    setrefreshing(true)
+    refetch().finally(() => {
+      setrefreshing(false)
+    })
+  })
   return (
     <View style={ styles.container }>
       <StatusBar barStyle="light-content" />
@@ -35,10 +43,13 @@ const MovieList = ({ navigation }) => {
         </View>
       </View>
 
-     { loading ? 
+     { loading || refreshing ? 
         <Loader />
         :
         <FlatList 
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         style={ styles.flatList } 
         data={ data.movies } 
         renderItem={ ({ item }) => (
