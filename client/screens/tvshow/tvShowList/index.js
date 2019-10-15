@@ -25,10 +25,15 @@ const TvShowList = ({ navigation }) => {
     })
   })
 
-  useEffect(() => {
-    console.log(data, 'dari tv show list')
-  }, [data])
-  const [inputFocus, setInputFocus] = useState(null)
+  // useEffect(() => {
+  //   console.log(data, 'dari tv show list')
+  // }, [data])
+ 
+  if (data) {
+    console.log(data, 'tv list')
+    console.log(loading, 'loading')
+  }
+  
   return (
     <View style={ styles.container }>
       <StatusBar barStyle="light-content" />

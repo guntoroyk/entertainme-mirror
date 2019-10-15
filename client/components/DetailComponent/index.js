@@ -9,9 +9,11 @@ import { DELETE_MOVIE, DELETE_TVSHOW } from '../../graphql/mutation'
 
 import { AirbnbRating, Rating } from 'react-native-ratings'
 import * as constants from '../../constants'
+import Loader from '../loader'
 
 const Detail = (props) => {
   const { movie, tvShow, navigation } = props
+
   const [deleteMovie, { loading, error }] = useMutation(DELETE_MOVIE, {
     onCompleted() {
       setTimeout(() => {
@@ -62,6 +64,7 @@ const Detail = (props) => {
     }
   }
 
+  
   const handleEdit = () => {
     if (movie) {
       navigation.navigate('EditMovie', { movie }) 
@@ -104,6 +107,10 @@ const Detail = (props) => {
       ]
     )
   
+  }
+
+  if (!data) {
+    return <Loader />
   }
 
   return (

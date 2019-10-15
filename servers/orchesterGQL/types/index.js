@@ -32,7 +32,7 @@ export default gql`
       backdrop_path: String, 
       release_date: String, 
       rating: Int
-    ) : Message,
+    ) : Movie,
 
     addTvShow (
       title: String, 
@@ -53,7 +53,7 @@ export default gql`
       backdrop_path: String, 
       release_date: String, 
       rating: Int
-    ) : Message,
+    ) : TvShow,
         
   }
       

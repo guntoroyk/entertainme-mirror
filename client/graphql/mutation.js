@@ -47,8 +47,17 @@ export const EDIT_MOVIE = gql`
         release_date: $release_date, 
         rating: $rating ) {
 
-          status,
-          message
+          _id,
+          title,
+          overview,
+          release_date, 
+          rating,
+          poster_path {
+            image_url
+          },
+          backdrop_path {
+            image_url
+          }
       }
     }
 `
@@ -113,8 +122,17 @@ export const EDIT_TVSHOW = gql`
         release_date: $release_date, 
         rating: $rating ) {
 
-          status,
-          message
+          _id
+          title,
+          overview, 
+          poster_path {
+            image_url
+          },
+          backdrop_path {
+            image_url
+          }, 
+          release_date, 
+          rating 
       }
     }
 `

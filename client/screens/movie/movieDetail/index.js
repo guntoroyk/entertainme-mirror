@@ -11,7 +11,7 @@ const MovieDetail =  ({ navigation }) => {
   // console.log(movieId, 'movieId')
   const { loading, error, data } = useQuery(FETCH_MOVIE(movieId))
   // console.log(data)
-  if (loading) return <Loader />
+  if (loading || !data) return <Loader />
   else if (error) return (
     <View>
       <Text>{ JSON.stringify(error, null, 2) }</Text>

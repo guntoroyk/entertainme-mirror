@@ -118,7 +118,7 @@ const AddTvShow = ({ navigation }) => {
         <AnimatedEllipsis
         numberOfDots={4}
         style={{
-          color: 'rgb(54, 90, 209)',
+          color: constants.color.primary,
           fontSize: 72,
         }}
         animationDelay={150}/>
@@ -138,7 +138,7 @@ const AddTvShow = ({ navigation }) => {
   if (successAdd) {
     return (
       <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{fontSize: 23, color: 'rgb(97, 236, 97)'}}>Success!</Text>
+        <Text style={{fontSize: 23, color: constants.color.primary}}>Success!</Text>
       </View>
     )
   }

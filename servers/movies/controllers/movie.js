@@ -46,20 +46,21 @@ module.exports = class MovieController {
     try {
       const response = await Movie.findOneAndUpdate({_id: movieId}, {
         title, overview, release_date, rating
-      })
+      },{ new: true } )
       console.log(response, 'response pas update!!!')
-      if (response) {
-        res.status(200).json({
-          status: 200,
-          message: 'Success update movie'
-        })
-      } else {
-        console.log('aaaaaa')
-        res.status(400).json({
-          status: 400,
-          message: 'Movie ID is not found'
-        })
-      }
+      res.status(200).json(response)
+      // if (response) {
+      //   // res.status(200).json({
+      //   //   status: 200,
+      //   //   message: 'Success update movie',
+      //   // })
+      // } else {
+      //   console.log('aaaaaa')
+      //   res.status(400).json({
+      //     status: 400,
+      //     message: 'Movie ID is not found'
+      //   })
+      // }
     } catch (error) {
       console.log('aa error')
       next(error)

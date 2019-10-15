@@ -9,8 +9,9 @@ import * as constants from '../../../constants'
 const TvShowDetail =  ({ navigation }) => {
   const tvShowId = navigation.getParam('dataId', null)
   console.log(tvShowId, 'tvShowId')
-  const { loading, error, data } = useQuery(FETCH_TVSHOW(tvShowId))
+  const { loading, error, data, refetch } = useQuery(FETCH_TVSHOW(tvShowId))
   console.log(data, 'data tv show detaill')
+
   if (loading) return <Loader />
   else if (error) return (
     <View>

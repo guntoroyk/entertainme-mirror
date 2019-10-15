@@ -5,7 +5,7 @@ import { ApolloClient } from 'apollo-client'
 
 const client = new ApolloClient({
   link: new HttpLink({
-    uri: 'http://192.168.0.60:4000',
+    uri: 'http://172.16.14.128:4000',
   }),
   cache: new InMemoryCache(),
 })

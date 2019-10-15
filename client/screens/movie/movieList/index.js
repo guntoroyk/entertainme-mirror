@@ -15,7 +15,6 @@ console.log(Constants.statusBarHeight, 'tinggi statusbar')
 const MovieList = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(FETCH_MOVIES)
   const [refreshing, setrefreshing] = useState(false)
-  // console.log(data)
 
   const onRefresh = useCallback(() => {
     console.log('refresh!!!')
@@ -78,7 +77,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     paddingBottom: 7,
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    marginBottom: 10
   },
   flatList: {
     paddingTop: constants.size.space,

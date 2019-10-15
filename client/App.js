@@ -19,7 +19,6 @@ const AppNavigator = createBottomTabNavigator(
   {
     Movie,
     TvShow,
-    Favorite
   },
   {
     initialRouteName: 'Movie',

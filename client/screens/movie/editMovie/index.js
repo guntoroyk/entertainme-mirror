@@ -6,15 +6,15 @@ import DateTimePicker from "react-native-modal-datetime-picker"
 import * as constants from '../../../constants'
 
 import { EDIT_MOVIE } from '../../../graphql/mutation'
-import { FETCH_MOVIE } from '../../../graphql/query'
+import { FETCH_MOVIE, FETCH_MOVIES } from '../../../graphql/query'
 
 const EditMovie = ({ navigation }) => {
   const movie = navigation.getParam('movie', null)
-
-  const [title, setTitle] = useState('')
-  const [overview, setOverview] = useState('')
-  const [rating, setRating] = useState('')
-  const [releaseDate, setreleaseDate] = useState('')
+  // console.log(movie._id)
+  const [title, setTitle] = useState(movie.title)
+  const [overview, setOverview] = useState(movie.overview)
+  const [rating, setRating] = useState(movie.rating.toString())
+  const [releaseDate, setreleaseDate] = useState(movie.release_date)
   const [successAdd, setSuccessAdd] = useState(false)
 
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false)
@@ -36,18 +36,25 @@ const EditMovie = ({ navigation }) => {
   const [editMovie, { loading, error } ] = useMutation(EDIT_MOVIE, {
     onCompleted() {
       setSuccessAdd(true)
+     
       setTimeout(() => {
         setSuccessAdd(false)
         navigation.navigate('Detail')
       }, 1000)
     },
     onError() {
-      setTimeout(() => {
-        navigation.navigate('Detail')
-      })
+      navigation.navigate('Detail')
+      // setTimeout(() => {
+      // })
     },
-    refetchQueries: [{query: FETCH_MOVIE(movie._id)}],
-    awaitRefetchQueries: true
+    // update(cache, {data: {editMovie}}) {
+    //   cache.writeQuery({
+    //     query: FETCH_MOVIE(movie._id),
+    //     data: { movie: editMovie }
+    //   });
+    // },
+    // refetchQueries: () => [{ query: FETCH_MOVIE(movie._id) }],
+    // awaitRefetchQueries: true
   })
 
   const submitData = () => {
@@ -62,16 +69,6 @@ const EditMovie = ({ navigation }) => {
     })
   }
 
-  useEffect(() => {
-    console.log(movie, 'edit movieee')
-    if (movie) {
-      setTitle(movie.title)
-      setOverview(movie.overview)
-      setRating(movie.rating.toString())
-      setreleaseDate(movie.release_date)
-    }
-  }, [])
-
   if (loading) {
     return (
       <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
@@ -79,7 +76,7 @@ const EditMovie = ({ navigation }) => {
         <AnimatedEllipsis
         numberOfDots={4}
         style={{
-          color: 'rgb(54, 90, 209)',
+          color: constants.color.primary,
           fontSize: 72,
         }}
         animationDelay={150}/>
@@ -99,7 +96,7 @@ const EditMovie = ({ navigation }) => {
   if (successAdd) {
     return (
       <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{fontSize: 23, color: 'rgb(97, 236, 97)'}}>Movie updated!</Text>
+        <Text style={{fontSize: 23, color: constants.color.primary}}>Movie updated!</Text>
       </View>
     )
   }

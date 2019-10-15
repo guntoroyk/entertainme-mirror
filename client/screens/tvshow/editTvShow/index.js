@@ -6,15 +6,15 @@ import DateTimePicker from "react-native-modal-datetime-picker"
 import * as constants from '../../../constants'
 
 import { EDIT_TVSHOW } from '../../../graphql/mutation'
-import { FETCH_TVSHOW } from '../../../graphql/query'
+import { FETCH_TVSHOW, FETCH_TVSHOWS } from '../../../graphql/query'
 
 const EditTvShow = ({ navigation }) => {
   const tvShow = navigation.getParam('tvShow', null)
 
-  const [title, setTitle] = useState('')
-  const [overview, setOverview] = useState('')
-  const [rating, setRating] = useState('')
-  const [releaseDate, setreleaseDate] = useState('')
+  const [title, setTitle] = useState(tvShow.title)
+  const [overview, setOverview] = useState(tvShow.overview)
+  const [rating, setRating] = useState(tvShow.rating.toString())
+  const [releaseDate, setreleaseDate] = useState(tvShow.release_date)
   const [successAdd, setSuccessAdd] = useState(false)
 
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false)
@@ -36,18 +36,17 @@ const EditTvShow = ({ navigation }) => {
   const [editTvShow, { loading, error } ] = useMutation(EDIT_TVSHOW, {
     onCompleted() {
       setSuccessAdd(true)
+     
       setTimeout(() => {
+        navigation.navigate('Detail')
         setSuccessAdd(false)
-        navigation.navigate('TvShow')
       }, 1000)
     },
     onError() {
-      setTimeout(() => {
-        navigation.navigate('TvShow')
-      })
-    },
-    refetchQueries: [{ query: FETCH_TVSHOW(tvShow._id)}],
-    awaitRefetchQueries: true
+      // navigation.navigate('Detail', { dataId: tvShow._id })
+      // setTimeout(() => {
+      // })
+    }
   })
 
   const submitData = () => {
@@ -62,16 +61,6 @@ const EditTvShow = ({ navigation }) => {
     })
   }
 
-  useEffect(() => {
-    console.log(tvShow, 'edit tvshow....')
-    if (tvShow) {
-      setTitle(tvShow.title)
-      setOverview(tvShow.overview)
-      setRating(tvShow.rating.toString())
-      setreleaseDate(tvShow.release_date)
-    }
-  }, [])
-
   if (loading) {
     return (
       <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
@@ -79,7 +68,7 @@ const EditTvShow = ({ navigation }) => {
         <AnimatedEllipsis
         numberOfDots={4}
         style={{
-          color: 'rgb(54, 90, 209)',
+          color: constants.color.primary,
           fontSize: 72,
         }}
         animationDelay={150}/>
@@ -99,7 +88,7 @@ const EditTvShow = ({ navigation }) => {
   if (successAdd) {
     return (
       <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{fontSize: 23, color: 'rgb(97, 236, 97)'}}>Success!</Text>
+        <Text style={{fontSize: 23, color: constants.color.primary}}>Tv show updated!</Text>
       </View>
     )
   }

@@ -45,20 +45,22 @@ module.exports = class TvShowController {
     try {
       const response = await TvShow.findOneAndUpdate({_id: tvShowId}, {
         title, overview, release_date, rating
-      })
+      }, { new: true })
       console.log(response, 'response pas update!!!')
-      if (response) {
-        res.status(200).json({
-          status: 200,
-          message: 'Success update tv show'
-        })
-      } else {
-        console.log('aaaaaa')
-        res.status(400).json({
-          status: 400,
-          message: 'TvShow ID is not found'
-        })
-      }
+
+      res.status(200).json(response)
+      // if (response) {
+      //   res.status(200).json({
+      //     status: 200,
+      //     message: 'Success update tv show'
+      //   })
+      // } else {
+      //   console.log('aaaaaa')
+      //   res.status(400).json({
+      //     status: 400,
+      //     message: 'TvShow ID is not found'
+      //   })
+      // }
     } catch (error) {
       console.log('aa error')
       next(error)

@@ -2,10 +2,15 @@ import React from 'react'
 import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native'
 import { AirbnbRating } from 'react-native-ratings'
 import * as constants from '../../constants'
+import Loader from '../../components/loader'
 
 const Card = (props) => {
   const { data } = props
-  console.log(data, 'dari cardd')
+  
+  if (!data._id) {
+    return <Loader />
+  }
+
   return (
     <TouchableOpacity style={styles.container} onPress={ () => props.navigation.navigate('Detail', { dataId: data._id }) } >
       <Image 
