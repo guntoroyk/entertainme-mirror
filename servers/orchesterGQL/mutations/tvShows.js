@@ -36,10 +36,10 @@ export const addTvShow = async (parent, args, context, info) => {
     }
     return data
 
-  } catch ({response}) {
+  } catch (error) {
     
-    console.log(JSON.stringify(response, null, 2), 'error dari tvshow mutation')
-    return error.data
+    console.log(JSON.stringify(error.request, null, 2), 'error dari tvshow mutation')
+    return error.request
   }
 }
 

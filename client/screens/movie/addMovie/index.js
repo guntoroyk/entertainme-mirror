@@ -42,6 +42,7 @@ const AddMovie = ({ navigation }) => {
     })
 
     if (!result.cancelled) {
+      // console.log(result, 'result pick poster image')
       setPosterPath(result.base64)
       setPosterPathUriPrev(result.uri)
       // console.log(result.uri)
@@ -82,12 +83,12 @@ const AddMovie = ({ navigation }) => {
       setTimeout(() => {
         setSuccessAdd(false)
         navigation.navigate('Movie')
-      })
+      }, 1000)
     },
     onError() {
       setTimeout(() => {
         navigation.navigate('Movie')
-      })
+      }, 2000)
     },
     update(cache, { data: { addMovie }}) {
       const { movies } = cache.readQuery({ query: FETCH_MOVIES })
@@ -130,7 +131,7 @@ const AddMovie = ({ navigation }) => {
     console.log(JSON.stringify(error, null, 2))
     return (
       <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{fontSize: 23, color: 'red'}}>{ JSON.stringify(error, null, 2) }</Text>
+        <Text style={{fontSize: 23, color: 'red'}}> Max image size is 2mb </Text>
       </View>
     )
   }

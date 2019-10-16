@@ -82,12 +82,12 @@ const AddTvShow = ({ navigation }) => {
       setTimeout(() => {
         setSuccessAdd(false)
         navigation.navigate('TvShow')
-      })
+      }, 1000)
     },
     onError() {
       setTimeout(() => {
         navigation.navigate('TvShow')
-      })
+      }, 2000)
     },
     update(cache, { data: { addTvShow }}) {
       const { tvShows } = cache.readQuery({ query: FETCH_TVSHOWS })
@@ -130,7 +130,7 @@ const AddTvShow = ({ navigation }) => {
     console.log(JSON.stringify(error, null, 2))
     return (
       <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{fontSize: 23, color: 'red'}}>{ JSON.stringify(error, null, 2) }</Text>
+        <Text style={{fontSize: 23, color: 'red'}}> Max image size is 2mb! </Text>
       </View>
     )
   }
